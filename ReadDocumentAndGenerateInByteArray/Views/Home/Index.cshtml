@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <button class="MyButton">GetFile</button>
+</div>
+<script>
+    async function getFile() {
+        
+        let response = await fetch("/Home/GetByteArray", {
+            method: 'POST'
+        });
+        if (response.ok) {
+            let res = await response.json();
+            console.log(res);
+                var documentArrayString = res.content.headers[2].value[0].split(",");
+                let bytes = new Uint8Array(documentArrayString);
+                var blob = new Blob([bytes], { type: "application/octet-stream" });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Военкоматы.xlsm";
+                link.click();
+        } else {
+            alert("Ошибка HTTP: " + response.status);
+        }
+    }
+
+
+    let button = document.querySelector(".MyButton");
+    button.addEventListener("click", this.getFile);
+
+</script>
